@@ -85,7 +85,7 @@ export default class MultiSlider extends React.Component {
         onShouldBlockNativeResponder: (evt, gestureState) => true,
       });
     };
-    
+
     this._panResponderBetween = customPanResponder(
       (gestureState) => {
         this.startOne(gestureState);
@@ -113,43 +113,43 @@ export default class MultiSlider extends React.Component {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     if (this.state.onePressed || this.state.twoPressed) {
       return;
     }
 
     let nextState = {};
     if (
-      nextProps.min !== this.props.min ||
-      nextProps.max !== this.props.max ||
-      nextProps.step !== this.props.step ||
-      nextProps.values[0] !== this.state.valueOne ||
-      nextProps.sliderLength !== this.props.sliderLength ||
-      nextProps.values[1] !== this.state.valueTwo ||
-      (nextProps.sliderLength !== this.props.sliderLength &&
-        nextProps.values[1])
+      prevProps.min !== this.props.min ||
+      prevProps.max !== this.props.max ||
+      prevProps.step !== this.props.step ||
+      prevProps.values[0] !== this.state.valueOne ||
+      prevProps.sliderLength !== this.props.sliderLength ||
+      prevProps.values[1] !== this.state.valueTwo ||
+      (prevProps.sliderLength !== this.props.sliderLength &&
+        this.props.values[1])
     ) {
       this.optionsArray =
         this.props.optionsArray ||
-        createArray(nextProps.min, nextProps.max, nextProps.step);
+        createArray(this.props.min, this.props.max, this.props.step);
 
-      this.stepLength = this.props.sliderLength / this.optionsArray.length;
+      this.stepLength = prevProps.sliderLength / this.optionsArray.length;
 
       var positionOne = valueToPosition(
-        nextProps.values[0],
+        this.props.values[0],
         this.optionsArray,
-        nextProps.sliderLength,
+        this.props.sliderLength,
       );
-      nextState.valueOne = nextProps.values[0];
+      nextState.valueOne = this.props.values[0];
       nextState.pastOne = positionOne;
       nextState.positionOne = positionOne;
 
       var positionTwo = valueToPosition(
-        nextProps.values[1],
+        this.props.values[1],
         this.optionsArray,
-        nextProps.sliderLength,
+        this.props.sliderLength,
       );
-      nextState.valueTwo = nextProps.values[1];
+      nextState.valueTwo = this.props.values[1];
       nextState.pastTwo = positionTwo;
       nextState.positionTwo = positionTwo;
     }
@@ -157,7 +157,7 @@ export default class MultiSlider extends React.Component {
     if (nextState != {}) {
       this.setState(nextState);
 
-      if (typeof nextState.positionOne !== 'undefined' && typeof nextState.positionTwo !== 'undefined') {
+      if (typeof this.props.positionOne !== 'undefined' && typeof this.props.positionTwo !== 'undefined') {
           this.props.onMarkersPosition([nextState.positionOne, nextState.positionTwo]);
       }
     }
@@ -519,7 +519,7 @@ export default class MultiSlider extends React.Component {
           oneMarkerLeftPosition={positionOne}
           twoMarkerLeftPosition={positionTwo}
         />
-        {this.props.imageBackgroundSource && 
+        {this.props.imageBackgroundSource &&
           <ImageBackground source={this.props.imageBackgroundSource} style={[{width: '100%', height: '100%'}, containerStyle]}>
             {body}
           </ImageBackground>
